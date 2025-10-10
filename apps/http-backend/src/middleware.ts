@@ -9,7 +9,7 @@ import {JWT_SECRET} from "@repo/backend-common/config"
 // }
 
 export function middleware(req: Request, res: Response, next: NextFunction){
-  const token = req.header("authorization") || "";
+  const token = req.header("Authorization") || "";
 
   const decoded = jwt.verify(token, JWT_SECRET);
 
