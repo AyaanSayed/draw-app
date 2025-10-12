@@ -134,19 +134,47 @@ app.post("/room", middleware, async (req, res) => {
   });
 });
 
-app.get("/chat", middleware, async (req, res) => {
+app.get("/chat/:roomId", middleware, async (req, res) => {
   try {
     // @ts-ignore
-    const userId = req.userId;
-    const chats = prismaClient.chat.findMany({
+    const roomId = Number(req.params.roomId);
+
+    const chats = await prismaClient.chat.findMany({
       where: {
-        userId,
+        roomId
       },
+      take : 50,
+      orderBy : {
+        id: "desc"
+      }
     });
     res.json({
       chats,
     });
-  } catch (error) {}
+  } catch (error) {
+    res.status(411).json({
+      message: "unauthorized"
+    })
+  }
 });
+
+app.get("/room/:slug",  async (req, res)=> {
+  const slug = req.params.slug;
+  try {
+    const room = prismaClient.room.findFirst({
+      where : {
+        slug
+      }
+    })
+
+    res.json({
+      room
+    })
+  } catch (error) {
+    res.status(411).json({
+      message : "room does not exist"
+    })
+  }
+})
 
 app.listen(3001);
