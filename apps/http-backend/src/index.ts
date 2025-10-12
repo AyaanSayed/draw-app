@@ -134,7 +134,7 @@ app.post("/room", middleware, async (req, res) => {
   });
 });
 
-app.get("/chat/:roomId", middleware, async (req, res) => {
+app.get("/chats/:roomId", async (req, res) => {
   try {
     // @ts-ignore
     const roomId = Number(req.params.roomId);
@@ -149,7 +149,7 @@ app.get("/chat/:roomId", middleware, async (req, res) => {
       }
     });
     res.json({
-      chats,
+      chats
     });
   } catch (error) {
     res.status(411).json({
@@ -161,7 +161,7 @@ app.get("/chat/:roomId", middleware, async (req, res) => {
 app.get("/room/:slug",  async (req, res)=> {
   const slug = req.params.slug;
   try {
-    const room = prismaClient.room.findFirst({
+    const room = await prismaClient.room.findFirstOrThrow({
       where : {
         slug
       }
